@@ -255,44 +255,11 @@
     justify-content: center;
     color: var(--gold-soft);
     font-size: 48px;
-    position: relative;
   }
   .profile-card__photo img { width: 100%; height: 100%; object-fit: cover; }
-  .profile-card__income {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: rgba(13,12,10,.75);
-    border: 1px solid var(--gold);
-    color: var(--gold-soft);
-    font-size: 11px;
-    font-weight: 700;
-    padding: 5px 12px;
-    border-radius: 999px;
-    letter-spacing: .04em;
-  }
   .profile-card__body { padding: 20px; }
-  .profile-card__name {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 2px;
-  }
-  .profile-card__role {
-    font-size: 13.5px;
-    color: var(--gold-deep);
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-  .profile-card__tagline {
-    font-size: 13.5px;
-    color: var(--ink-soft);
-    font-style: italic;
-    border-left: 3px solid var(--gold);
-    padding-left: 10px;
-    margin-bottom: 16px;
-  }
-  .profile-card__section { margin-bottom: 14px; }
+  .profile-card__section { margin-bottom: 16px; }
+  .profile-card__section:last-child { margin-bottom: 0; }
   .profile-card__label {
     font-size: 11px;
     font-weight: 700;
@@ -301,22 +268,15 @@
     margin-bottom: 6px;
   }
   .profile-card__text {
-    font-size: 13.5px;
+    font-size: 14px;
     color: var(--ink-soft);
     line-height: 1.8;
     white-space: pre-wrap;
   }
-  .profile-card__pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .profile-card__pills span {
-    font-size: 11px;
-    color: var(--gold-deep);
-    background: var(--gold-soft);
-    border-radius: 6px;
-    padding: 4px 9px;
+  .profile-card__text.name {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--ink);
   }
 
   .preview-note {
@@ -449,13 +409,20 @@
       <div class="profile-card">
         <div class="profile-card__photo" id="preview-photo">
           <span id="preview-photo-placeholder">🧑‍💼</span>
-          <div class="profile-card__income hidden" id="preview-income"></div>
         </div>
         <div class="profile-card__body">
-          <div class="profile-card__name" id="preview-name"></div>
-          <div class="profile-card__role" id="preview-role"></div>
-          <div class="profile-card__tagline" id="preview-tagline"></div>
-
+          <div class="profile-card__section">
+            <div class="profile-card__label">お名前</div>
+            <div class="profile-card__text name" id="preview-name"></div>
+          </div>
+          <div class="profile-card__section">
+            <div class="profile-card__label">会社名</div>
+            <div class="profile-card__text" id="preview-company"></div>
+          </div>
+          <div class="profile-card__section">
+            <div class="profile-card__label">役職</div>
+            <div class="profile-card__text" id="preview-title"></div>
+          </div>
           <div class="profile-card__section">
             <div class="profile-card__label">事業内容</div>
             <div class="profile-card__text" id="preview-business"></div>
@@ -469,12 +436,20 @@
             <div class="profile-card__text" id="preview-want"></div>
           </div>
           <div class="profile-card__section">
-            <div class="profile-card__label">つながりのある業種</div>
-            <div class="profile-card__pills" id="preview-industries"></div>
+            <div class="profile-card__label">現在仲の良い、つながりのある業種</div>
+            <div class="profile-card__text" id="preview-industries"></div>
           </div>
           <div class="profile-card__section">
-            <div class="profile-card__label">提携を希望する職種</div>
-            <div class="profile-card__pills" id="preview-partner-type"></div>
+            <div class="profile-card__label">提携先職種</div>
+            <div class="profile-card__text" id="preview-partner-type"></div>
+          </div>
+          <div class="profile-card__section">
+            <div class="profile-card__label">最高月収</div>
+            <div class="profile-card__text" id="preview-income"></div>
+          </div>
+          <div class="profile-card__section">
+            <div class="profile-card__label">一言</div>
+            <div class="profile-card__text" id="preview-tagline"></div>
           </div>
         </div>
       </div>
@@ -524,31 +499,20 @@ photoInput.addEventListener("change", () => {
   reader.readAsDataURL(file);
 });
 
-function splitTags(value) {
-  return (value || "").split(/[、,]/).map(s => s.trim()).filter(Boolean);
-}
-
 // ---- フォーム → プレビュー ----
 function buildPreview() {
   const fd = new FormData(form);
 
   document.getElementById("preview-name").textContent = fd.get("name") || "";
-  document.getElementById("preview-role").textContent = [fd.get("company"), fd.get("title")].filter(Boolean).join(" ／ ");
-  document.getElementById("preview-tagline").textContent = fd.get("tagline") ? `「${fd.get("tagline")}」` : "";
-
+  document.getElementById("preview-company").textContent = fd.get("company") || "";
+  document.getElementById("preview-title").textContent = fd.get("title") || "";
   document.getElementById("preview-business").textContent = fd.get("business") || "";
   document.getElementById("preview-vision").textContent = fd.get("vision") || "";
   document.getElementById("preview-want").textContent = fd.get("wantToConnect") || "";
-  document.getElementById("preview-industries").innerHTML = splitTags(fd.get("connectedIndustries")).map(t => `<span>${t}</span>`).join("");
-  document.getElementById("preview-partner-type").innerHTML = splitTags(fd.get("desiredPartnerType")).map(t => `<span>${t}</span>`).join("");
-
-  const incomeEl = document.getElementById("preview-income");
-  if (fd.get("maxMonthlyIncome")) {
-    incomeEl.textContent = "月収 " + fd.get("maxMonthlyIncome");
-    incomeEl.classList.remove("hidden");
-  } else {
-    incomeEl.classList.add("hidden");
-  }
+  document.getElementById("preview-industries").textContent = fd.get("connectedIndustries") || "";
+  document.getElementById("preview-partner-type").textContent = fd.get("desiredPartnerType") || "";
+  document.getElementById("preview-income").textContent = fd.get("maxMonthlyIncome") || "非公開";
+  document.getElementById("preview-tagline").textContent = fd.get("tagline") || "";
 
   const photoBox = document.getElementById("preview-photo");
   const placeholder = document.getElementById("preview-photo-placeholder");

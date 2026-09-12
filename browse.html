@@ -52,18 +52,14 @@
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 
   .profile-card { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--white); box-shadow: 0 6px 18px rgba(0,0,0,.06); }
-  .profile-card__photo { width: 100%; aspect-ratio: 4 / 3; background: linear-gradient(160deg, var(--black), #2a271a); display: flex; align-items: center; justify-content: center; color: var(--gold-soft); font-size: 48px; position: relative; }
+  .profile-card__photo { width: 100%; aspect-ratio: 4 / 3; background: linear-gradient(160deg, var(--black), #2a271a); display: flex; align-items: center; justify-content: center; color: var(--gold-soft); font-size: 48px; }
   .profile-card__photo img { width: 100%; height: 100%; object-fit: cover; }
-  .profile-card__income { position: absolute; top: 12px; right: 12px; background: rgba(13,12,10,.75); border: 1px solid var(--gold); color: var(--gold-soft); font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 999px; letter-spacing: .04em; }
   .profile-card__body { padding: 20px; }
-  .profile-card__name { font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
-  .profile-card__role { font-size: 13.5px; color: var(--gold-deep); font-weight: 700; margin-bottom: 10px; }
-  .profile-card__tagline { font-size: 13.5px; color: var(--ink-soft); font-style: italic; border-left: 3px solid var(--gold); padding-left: 10px; margin-bottom: 16px; }
-  .profile-card__section { margin-bottom: 14px; }
+  .profile-card__section { margin-bottom: 16px; }
+  .profile-card__section:last-child { margin-bottom: 0; }
   .profile-card__label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: .06em; margin-bottom: 6px; }
-  .profile-card__text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.8; white-space: pre-wrap; }
-  .profile-card__pills { display: flex; flex-wrap: wrap; gap: 6px; }
-  .profile-card__pills span { font-size: 11px; color: var(--gold-deep); background: var(--gold-soft); border-radius: 6px; padding: 4px 9px; }
+  .profile-card__text { font-size: 14px; color: var(--ink-soft); line-height: 1.8; white-space: pre-wrap; }
+  .profile-card__text.name { font-size: 19px; font-weight: 700; color: var(--ink); }
 
   .footer-note { font-size: 12px; color: var(--muted); text-align: center; margin-top: 28px; line-height: 1.8; }
 </style>
@@ -142,33 +138,29 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
-function splitTags(value) {
-  return (value || "").split(/[、,]/).map(s => s.trim()).filter(Boolean);
-}
-
 function renderCard(p) {
-  const industries = splitTags(p.connectedIndustries);
-  const partnerTypes = splitTags(p.desiredPartnerType);
-
   const photoHtml = p.photoUrl
     ? `<img src="${p.photoUrl}" alt="プロフィール写真">`
     : `<span>🧑‍💼</span>`;
-
-  const incomeHtml = p.maxMonthlyIncome
-    ? `<div class="profile-card__income">月収 ${escapeHtml(p.maxMonthlyIncome)}</div>`
-    : "";
 
   return `
     <div class="profile-card">
       <div class="profile-card__photo">
         ${photoHtml}
-        ${incomeHtml}
       </div>
       <div class="profile-card__body">
-        <div class="profile-card__name">${escapeHtml(p.name || "")}</div>
-        <div class="profile-card__role">${[p.company, p.title].filter(Boolean).map(escapeHtml).join(" ／ ")}</div>
-        ${p.tagline ? `<div class="profile-card__tagline">「${escapeHtml(p.tagline)}」</div>` : ""}
-
+        <div class="profile-card__section">
+          <div class="profile-card__label">お名前</div>
+          <div class="profile-card__text name">${escapeHtml(p.name || "")}</div>
+        </div>
+        <div class="profile-card__section">
+          <div class="profile-card__label">会社名</div>
+          <div class="profile-card__text">${escapeHtml(p.company || "")}</div>
+        </div>
+        <div class="profile-card__section">
+          <div class="profile-card__label">役職</div>
+          <div class="profile-card__text">${escapeHtml(p.title || "")}</div>
+        </div>
         <div class="profile-card__section">
           <div class="profile-card__label">事業内容</div>
           <div class="profile-card__text">${escapeHtml(p.business || "")}</div>
@@ -182,12 +174,20 @@ function renderCard(p) {
           <div class="profile-card__text">${escapeHtml(p.wantToConnect || "")}</div>
         </div>
         <div class="profile-card__section">
-          <div class="profile-card__label">つながりのある業種</div>
-          <div class="profile-card__pills">${industries.map(t => `<span>${escapeHtml(t)}</span>`).join("")}</div>
+          <div class="profile-card__label">現在仲の良い、つながりのある業種</div>
+          <div class="profile-card__text">${escapeHtml(p.connectedIndustries || "")}</div>
         </div>
         <div class="profile-card__section">
-          <div class="profile-card__label">提携を希望する職種</div>
-          <div class="profile-card__pills">${partnerTypes.map(t => `<span>${escapeHtml(t)}</span>`).join("")}</div>
+          <div class="profile-card__label">提携先職種</div>
+          <div class="profile-card__text">${escapeHtml(p.desiredPartnerType || "")}</div>
+        </div>
+        <div class="profile-card__section">
+          <div class="profile-card__label">最高月収</div>
+          <div class="profile-card__text">${escapeHtml(p.maxMonthlyIncome || "非公開")}</div>
+        </div>
+        <div class="profile-card__section">
+          <div class="profile-card__label">一言</div>
+          <div class="profile-card__text">${escapeHtml(p.tagline || "")}</div>
         </div>
       </div>
     </div>

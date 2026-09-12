@@ -343,8 +343,12 @@
           <textarea id="vision" name="vision" placeholder="今後実現したいこと、目指している姿などをご記入ください" required></textarea>
         </div>
         <div class="field">
-          <label class="field-label" for="wantToConnect">繋がりたい人<span class="required-mark">必須</span></label>
-          <textarea id="wantToConnect" name="wantToConnect" placeholder="どのような方と繋がりたいか、自由にご記入ください" required></textarea>
+          <label class="field-label" for="wantAsCustomer">お客様として繋がりたい人<span class="required-mark">必須</span></label>
+          <textarea id="wantAsCustomer" name="wantAsCustomer" placeholder="どのような方にお客様として繋がりたいか、自由にご記入ください" required></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="wantAsPartner">協業として繋がりたい人<span class="required-mark">必須</span></label>
+          <textarea id="wantAsPartner" name="wantAsPartner" placeholder="どのような方と協業として繋がりたいか、自由にご記入ください" required></textarea>
         </div>
         <div class="field">
           <label class="field-label" for="connectedIndustries">現在仲の良い、つながりのある業種<span class="required-mark">必須</span></label>
@@ -432,8 +436,12 @@
             <div class="profile-card__text" id="preview-vision"></div>
           </div>
           <div class="profile-card__section">
-            <div class="profile-card__label">繋がりたい人</div>
-            <div class="profile-card__text" id="preview-want"></div>
+            <div class="profile-card__label">お客様として繋がりたい人</div>
+            <div class="profile-card__text" id="preview-want-customer"></div>
+          </div>
+          <div class="profile-card__section">
+            <div class="profile-card__label">協業として繋がりたい人</div>
+            <div class="profile-card__text" id="preview-want-partner"></div>
           </div>
           <div class="profile-card__section">
             <div class="profile-card__label">現在仲の良い、つながりのある業種</div>
@@ -508,7 +516,8 @@ function buildPreview() {
   document.getElementById("preview-title").textContent = fd.get("title") || "";
   document.getElementById("preview-business").textContent = fd.get("business") || "";
   document.getElementById("preview-vision").textContent = fd.get("vision") || "";
-  document.getElementById("preview-want").textContent = fd.get("wantToConnect") || "";
+  document.getElementById("preview-want-customer").textContent = fd.get("wantAsCustomer") || "";
+  document.getElementById("preview-want-partner").textContent = fd.get("wantAsPartner") || "";
   document.getElementById("preview-industries").textContent = fd.get("connectedIndustries") || "";
   document.getElementById("preview-partner-type").textContent = fd.get("desiredPartnerType") || "";
   document.getElementById("preview-income").textContent = fd.get("maxMonthlyIncome") || "非公開";

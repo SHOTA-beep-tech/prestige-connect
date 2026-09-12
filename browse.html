@@ -170,8 +170,12 @@ function renderCard(p) {
           <div class="profile-card__text">${escapeHtml(p.vision || "")}</div>
         </div>
         <div class="profile-card__section">
-          <div class="profile-card__label">繋がりたい人</div>
-          <div class="profile-card__text">${escapeHtml(p.wantToConnect || "")}</div>
+          <div class="profile-card__label">お客様として繋がりたい人</div>
+          <div class="profile-card__text">${escapeHtml(p.wantAsCustomer || "")}</div>
+        </div>
+        <div class="profile-card__section">
+          <div class="profile-card__label">協業として繋がりたい人</div>
+          <div class="profile-card__text">${escapeHtml(p.wantAsPartner || "")}</div>
         </div>
         <div class="profile-card__section">
           <div class="profile-card__label">現在仲の良い、つながりのある業種</div>

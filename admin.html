@@ -147,7 +147,8 @@
         <div class="section-heading">事業について</div>
         <div class="field"><label class="field-label" for="business">事業内容</label><textarea id="business" name="business"></textarea></div>
         <div class="field"><label class="field-label" for="vision">ビジョン</label><textarea id="vision" name="vision"></textarea></div>
-        <div class="field"><label class="field-label" for="wantToConnect">繋がりたい人</label><textarea id="wantToConnect" name="wantToConnect"></textarea></div>
+        <div class="field"><label class="field-label" for="wantAsCustomer">お客様として繋がりたい人</label><textarea id="wantAsCustomer" name="wantAsCustomer"></textarea></div>
+        <div class="field"><label class="field-label" for="wantAsPartner">協業として繋がりたい人</label><textarea id="wantAsPartner" name="wantAsPartner"></textarea></div>
         <div class="field"><label class="field-label" for="connectedIndustries">現在仲の良い、つながりのある業種</label><input type="text" id="connectedIndustries" name="connectedIndustries"></div>
         <div class="field"><label class="field-label" for="desiredPartnerType">提携先職種</label><input type="text" id="desiredPartnerType" name="desiredPartnerType"></div>
 
@@ -285,7 +286,7 @@ function openEdit(token) {
   if (!c) return;
   editingToken = token;
 
-  const fields = ["status","name","company","title","business","vision","wantToConnect",
+  const fields = ["status","name","company","title","business","vision","wantAsCustomer","wantAsPartner",
     "connectedIndustries","desiredPartnerType","maxMonthlyIncome","tagline","email","phone"];
   fields.forEach(f => {
     const el = document.getElementById(f);

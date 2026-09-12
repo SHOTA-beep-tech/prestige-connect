@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRESTIGE CONNECT | 会員プロフィール登録</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --paper: #f6f4ee;
+    --paper-deep: #ece8db;
+    --ink: #16140f;
+    --ink-soft: #3a362c;
+    --muted: #7a7364;
+    --line: #ddd7c4;
+    --gold: #a8842f;
+    --gold-deep: #7d611f;
+    --gold-soft: #f1e6c8;
+    --black: #0d0c0a;
+    --white: #ffffff;
+    --danger: #b23a2f;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Noto Sans JP", sans-serif;
+    background: var(--paper);
+    color: var(--ink-soft);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: "Cormorant Garamond", serif; }
+
+  /* ---- Header ---- */
+  .header {
+    background: var(--black);
+    padding: 16px 20px;
+  }
+  .header__inner {
+    max-width: 480px;
+    margin: 0 auto;
+    color: var(--gold-soft);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: .12em;
+  }
+
+  /* ---- Hero ---- */
+  .hero {
+    background: linear-gradient(160deg, var(--black) 0%, #22200f 100%);
+    color: var(--white);
+    padding: 34px 20px 44px;
+    text-align: center;
+  }
+  .hero__kicker {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    color: var(--gold-soft);
+    margin-bottom: 12px;
+  }
+  .hero__title {
+    font-size: 23px;
+    font-weight: 900;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .hero__lead {
+    font-size: 13px;
+    opacity: .85;
+    max-width: 420px;
+    margin: 0 auto 20px;
+  }
+  .hero__badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  .hero__badge {
+    background: rgba(200,166,79,.14);
+    border: 1px solid rgba(200,166,79,.5);
+    color: var(--gold-soft);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* ---- Page / form wrap ---- */
+  #app {
+    width: 100%;
+    max-width: 480px;
+    margin: -20px auto 0;
+    padding: 0 16px 64px;
+  }
+  .card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.08);
+  }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  .form-title { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .form-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+  .section-heading {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gold-deep);
+    margin: 28px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--paper-deep);
+  }
+  .section-heading:first-of-type { margin-top: 0; }
+  .section-note {
+    font-size: 12px;
+    color: var(--muted);
+    margin: -8px 0 16px;
+    line-height: 1.6;
+  }
+
+  .field { margin-bottom: 18px; }
+  .field label.field-label {
+    display: block;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 7px;
+  }
+  .field .required-mark {
+    color: var(--gold-deep);
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 6px;
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+  .field .optional-mark {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 500;
+    margin-left: 6px;
+  }
+  .field .note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.6;
+  }
+  input[type="text"], input[type="tel"], input[type="email"],
+  input[type="number"], select, textarea {
+    width: 100%;
+    padding: 13px 14px;
+    font-size: 16px; /* 16px以上でiOSズームを防止 */
+    font-family: inherit;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+  }
+  textarea { resize: vertical; min-height: 70px; }
+
+  .photo-upload {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .photo-preview {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: var(--paper-deep);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    font-size: 28px;
+    color: var(--muted);
+  }
+  .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-upload-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold-deep);
+    background: var(--gold-soft);
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  input[type="file"] { display: none; }
+
+  .hidden { display: none !important; }
+
+  .submit-btn, .secondary-btn {
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 12px;
+  }
+  .submit-btn {
+    color: var(--black);
+    background: linear-gradient(135deg, var(--gold) 0%, #cdaa4d 100%);
+  }
+  .submit-btn:hover { filter: brightness(1.03); }
+  .submit-btn:disabled { background: var(--muted); cursor: not-allowed; }
+  .secondary-btn {
+    color: var(--ink-soft);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    margin-top: 10px;
+  }
+
+  .privacy-note {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 12px;
+    line-height: 1.7;
+  }
+
+  /* ---- Preview card (business-profile style) ---- */
+  .profile-card {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--white);
+    box-shadow: 0 6px 18px rgba(0,0,0,.06);
+    margin-bottom: 20px;
+  }
+  .profile-card__photo {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(160deg, var(--black), #2a271a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold-soft);
+    font-size: 48px;
+    position: relative;
+  }
+  .profile-card__photo img { width: 100%; height: 100%; object-fit: cover; }
+  .profile-card__income {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(13,12,10,.75);
+    border: 1px solid var(--gold);
+    color: var(--gold-soft);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 999px;
+    letter-spacing: .04em;
+  }
+  .profile-card__body { padding: 20px; }
+  .profile-card__name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .profile-card__role {
+    font-size: 13.5px;
+    color: var(--gold-deep);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .profile-card__tagline {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    font-style: italic;
+    border-left: 3px solid var(--gold);
+    padding-left: 10px;
+    margin-bottom: 16px;
+  }
+  .profile-card__section { margin-bottom: 14px; }
+  .profile-card__label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: .06em;
+    margin-bottom: 6px;
+  }
+  .profile-card__text {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.8;
+    white-space: pre-wrap;
+  }
+  .profile-card__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .profile-card__pills span {
+    font-size: 11px;
+    color: var(--gold-deep);
+    background: var(--gold-soft);
+    border-radius: 6px;
+    padding: 4px 9px;
+  }
+
+  .preview-note {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  /* ---- Thanks screen ---- */
+  .thanks-icon { font-size: 40px; text-align: center; margin-bottom: 16px; }
+  .thanks-title { font-size: 18px; font-weight: 700; color: var(--ink); text-align: center; margin-bottom: 8px; }
+  .thanks-body { font-size: 14px; color: var(--ink-soft); text-align: center; line-height: 1.8; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header__inner serif">PRESTIGE CONNECT</div>
+</header>
+
+<div class="hero">
+  <p class="hero__kicker">年収1,000万円以上のビジネスマン限定</p>
+  <h1 class="hero__title">あなたのビジネスを、<br>ひとつのプロフィールに。</h1>
+  <p class="hero__lead">入力後、プロフィールカードのプレビューを確認してから登録できます。所要時間は5分程度です。</p>
+  <div class="hero__badges">
+    <span class="hero__badge">年収1,000万円以上限定</span>
+    <span class="hero__badge">登録前にプレビュー確認</span>
+    <span class="hero__badge">連絡先は運営のみ確認</span>
+  </div>
+</div>
+
+<div id="app">
+  <div class="card">
+
+    <!-- ===== 入力フォーム ===== -->
+    <div class="screen active" id="screen-form">
+      <div class="form-title">プロフィール登録フォーム</div>
+      <div class="form-subtitle">下記にご入力ください。<span class="required-mark">必須</span>の項目のみで確認画面へ進めます。</div>
+
+      <form id="entry-form">
+
+        <div class="section-heading">基本プロフィール</div>
+        <div class="field">
+          <label class="field-label" for="name">お名前<span class="required-mark">必須</span></label>
+          <input type="text" id="name" name="name" placeholder="例：山田 太郎" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label class="field-label" for="company">会社名<span class="required-mark">必須</span></label>
+          <input type="text" id="company" name="company" placeholder="例：株式会社〇〇" required>
+        </div>
+        <div class="field">
+          <label class="field-label" for="title">役職<span class="required-mark">必須</span></label>
+          <input type="text" id="title" name="title" placeholder="例：代表取締役" required>
+        </div>
+
+        <div class="section-heading">事業について</div>
+        <div class="field">
+          <label class="field-label" for="business">事業内容<span class="required-mark">必須</span></label>
+          <textarea id="business" name="business" placeholder="どのような事業を行っているか、自由にご記入ください" required></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="vision">ビジョン<span class="required-mark">必須</span></label>
+          <textarea id="vision" name="vision" placeholder="今後実現したいこと、目指している姿などをご記入ください" required></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="wantToConnect">繋がりたい人<span class="required-mark">必須</span></label>
+          <textarea id="wantToConnect" name="wantToConnect" placeholder="どのような方と繋がりたいか、自由にご記入ください" required></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="connectedIndustries">現在仲の良い、つながりのある業種<span class="required-mark">必須</span></label>
+          <input type="text" id="connectedIndustries" name="connectedIndustries" placeholder="例：IT、不動産、金融（読点区切りで複数入力可）" required>
+        </div>
+        <div class="field">
+          <label class="field-label" for="desiredPartnerType">提携先職種<span class="required-mark">必須</span></label>
+          <input type="text" id="desiredPartnerType" name="desiredPartnerType" placeholder="例：税理士、M&Aアドバイザー（読点区切りで複数入力可）" required>
+        </div>
+
+        <div class="section-heading">収入について</div>
+        <div class="field">
+          <label class="field-label" for="maxMonthlyIncome">最高月収<span class="optional-mark">任意</span></label>
+          <select id="maxMonthlyIncome" name="maxMonthlyIncome">
+            <option value="">選択しない（非公開）</option>
+            <option value="100万円未満">100万円未満</option>
+            <option value="100万円〜200万円">100万円〜200万円</option>
+            <option value="200万円〜300万円">200万円〜300万円</option>
+            <option value="300万円〜500万円">300万円〜500万円</option>
+            <option value="500万円以上">500万円以上</option>
+          </select>
+          <div class="note">公開するかどうかはご自身でお決めいただけます。証明書類の提出は不要です。</div>
+        </div>
+
+        <div class="section-heading">一言</div>
+        <div class="field">
+          <label class="field-label" for="tagline">一言<span class="required-mark">必須</span></label>
+          <input type="text" id="tagline" name="tagline" placeholder="例：誠実に、本気で向き合います。" required>
+        </div>
+
+        <div class="section-heading">プロフィール写真</div>
+        <div class="field">
+          <label class="field-label">お写真<span class="optional-mark">任意</span></label>
+          <div class="photo-upload">
+            <div class="photo-preview" id="photo-preview">📷</div>
+            <button type="button" class="photo-upload-btn" id="photo-upload-btn">写真を選択</button>
+            <input type="file" id="photo-input" name="photoFile" accept="image/*">
+          </div>
+          <div class="note">ご自身で選んだお写真を貼り付けたい場合のみアップロードしてください。未設定でも登録できます。</div>
+        </div>
+
+        <div class="section-heading">連絡先（運営確認用・他の会員には公開されません）</div>
+        <div class="field">
+          <label class="field-label" for="email">メールアドレス<span class="required-mark">必須</span></label>
+          <input type="email" id="email" name="email" placeholder="例：taro@example.com" inputmode="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label class="field-label" for="phone">電話番号<span class="required-mark">必須</span></label>
+          <input type="tel" id="phone" name="phone" placeholder="例：090-1234-5678" inputmode="tel" autocomplete="tel" required>
+        </div>
+
+        <button type="submit" class="submit-btn" id="to-preview-btn">プレビューを確認する</button>
+      </form>
+    </div>
+
+    <!-- ===== プレビュー（プロフィールカード） ===== -->
+    <div class="screen" id="screen-preview">
+      <div class="form-title">プロフィールプレビュー</div>
+      <div class="preview-note">他の会員には、このようなカードで表示されます。内容をご確認ください。</div>
+      <br>
+
+      <div class="profile-card">
+        <div class="profile-card__photo" id="preview-photo">
+          <span id="preview-photo-placeholder">🧑‍💼</span>
+          <div class="profile-card__income hidden" id="preview-income"></div>
+        </div>
+        <div class="profile-card__body">
+          <div class="profile-card__name" id="preview-name"></div>
+          <div class="profile-card__role" id="preview-role"></div>
+          <div class="profile-card__tagline" id="preview-tagline"></div>
+
+          <div class="profile-card__section">
+            <div class="profile-card__label">事業内容</div>
+            <div class="profile-card__text" id="preview-business"></div>
+          </div>
+          <div class="profile-card__section">
+            <div class="profile-card__label">ビジョン</div>
+            <div class="profile-card__text" id="preview-vision"></div>
+          </div>
+          <div class="profile-card__section">
+            <div class="profile-card__label">繋がりたい人</div>
+            <div class="profile-card__text" id="preview-want"></div>
+          </div>
+          <div class="profile-card__section">
+            <div class="profile-card__label">つながりのある業種</div>
+            <div class="profile-card__pills" id="preview-industries"></div>
+          </div>
+          <div class="profile-card__section">
+            <div class="profile-card__label">提携を希望する職種</div>
+            <div class="profile-card__pills" id="preview-partner-type"></div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="submit-btn" id="submit-btn">この内容で登録する</button>
+      <button type="button" class="secondary-btn" id="back-btn">内容を修正する</button>
+      <div class="privacy-note">ご入力いただいた情報は、本サービスにおける会員紹介の目的以外には使用しません。メールアドレス・電話番号は運営確認のみに使用し、他の会員には公開されません。</div>
+    </div>
+
+    <!-- ===== 完了 ===== -->
+    <div class="screen" id="screen-thanks">
+      <div class="thanks-icon">✅</div>
+      <div class="thanks-title">ご登録ありがとうございました</div>
+      <div class="thanks-body">ご入力いただいたメールアドレス宛に、マイページ専用リンク（プロフィールの確認・編集、他の会員様の紹介ページ閲覧用）をお送りしました。<br>現在スタッフが内容を確認しております。承認後、会員紹介ページに掲載されます。今しばらくお待ちください。</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/*
+  送信先: Google Apps Script のウェブアプリURLに差し替えてください。
+  設定手順はチャット側の案内を参照。
+*/
+const GAS_ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbz_QW5g24ZG3pOE6JnUCUx4Oocp5zjkqbVKGH5scNhoAGEtdEULarDQ00n92E--Lkjs/exec";
+
+const form = document.getElementById("entry-form");
+const screenForm = document.getElementById("screen-form");
+const screenPreview = document.getElementById("screen-preview");
+const screenThanks = document.getElementById("screen-thanks");
+
+// ---- 写真アップロード ----
+const photoInput = document.getElementById("photo-input");
+const photoUploadBtn = document.getElementById("photo-upload-btn");
+const photoPreview = document.getElementById("photo-preview");
+let photoDataUrl = "";
+
+photoUploadBtn.addEventListener("click", () => photoInput.click());
+photoInput.addEventListener("change", () => {
+  const file = photoInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    photoDataUrl = e.target.result;
+    photoPreview.innerHTML = `<img src="${photoDataUrl}" alt="プロフィール写真プレビュー">`;
+  };
+  reader.readAsDataURL(file);
+});
+
+function splitTags(value) {
+  return (value || "").split(/[、,]/).map(s => s.trim()).filter(Boolean);
+}
+
+// ---- フォーム → プレビュー ----
+function buildPreview() {
+  const fd = new FormData(form);
+
+  document.getElementById("preview-name").textContent = fd.get("name") || "";
+  document.getElementById("preview-role").textContent = [fd.get("company"), fd.get("title")].filter(Boolean).join(" ／ ");
+  document.getElementById("preview-tagline").textContent = fd.get("tagline") ? `「${fd.get("tagline")}」` : "";
+
+  document.getElementById("preview-business").textContent = fd.get("business") || "";
+  document.getElementById("preview-vision").textContent = fd.get("vision") || "";
+  document.getElementById("preview-want").textContent = fd.get("wantToConnect") || "";
+  document.getElementById("preview-industries").innerHTML = splitTags(fd.get("connectedIndustries")).map(t => `<span>${t}</span>`).join("");
+  document.getElementById("preview-partner-type").innerHTML = splitTags(fd.get("desiredPartnerType")).map(t => `<span>${t}</span>`).join("");
+
+  const incomeEl = document.getElementById("preview-income");
+  if (fd.get("maxMonthlyIncome")) {
+    incomeEl.textContent = "月収 " + fd.get("maxMonthlyIncome");
+    incomeEl.classList.remove("hidden");
+  } else {
+    incomeEl.classList.add("hidden");
+  }
+
+  const photoBox = document.getElementById("preview-photo");
+  const placeholder = document.getElementById("preview-photo-placeholder");
+  const existingImg = photoBox.querySelector("img");
+  if (photoDataUrl) {
+    if (existingImg) {
+      existingImg.src = photoDataUrl;
+    } else {
+      const img = document.createElement("img");
+      img.src = photoDataUrl;
+      img.alt = "プロフィール写真";
+      photoBox.insertBefore(img, photoBox.firstChild);
+      placeholder.style.display = "none";
+    }
+  } else {
+    placeholder.style.display = "flex";
+    if (existingImg) existingImg.remove();
+  }
+}
+
+form.addEventListener("submit", (ev) => {
+  ev.preventDefault();
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+  buildPreview();
+  screenForm.classList.remove("active");
+  screenPreview.classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+document.getElementById("back-btn").addEventListener("click", () => {
+  screenPreview.classList.remove("active");
+  screenForm.classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+// ---- 登録送信 ----
+function showThanks() {
+  screenPreview.classList.remove("active");
+  screenThanks.classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.getElementById("submit-btn").addEventListener("click", () => {
+  const submitBtn = document.getElementById("submit-btn");
+  submitBtn.disabled = true;
+
+  const formData = new FormData(form);
+  formData.append("action", "register");
+  formData.delete("photoFile");
+  if (photoDataUrl) formData.append("photoDataUrl", photoDataUrl);
+
+  if (!GAS_ENDPOINT_URL) {
+    // 送信先が未設定の場合は、動作確認のため送信をスキップして完了画面のみ表示
+    console.warn("GAS_ENDPOINT_URL が未設定です。送信は行われていません。", Object.fromEntries(formData));
+    showThanks();
+    submitBtn.disabled = false;
+    return;
+  }
+
+  fetch(GAS_ENDPOINT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    body: formData
+  }).then(() => {
+    showThanks();
+  }).catch(() => {
+    showThanks();
+  }).finally(() => {
+    submitBtn.disabled = false;
+  });
+});
+</script>
+
+</body>
+</html>

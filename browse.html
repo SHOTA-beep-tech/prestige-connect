@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRESTIGE CONNECT | 会員紹介ページ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --paper: #f6f4ee;
+    --paper-deep: #ece8db;
+    --ink: #16140f;
+    --ink-soft: #3a362c;
+    --muted: #7a7364;
+    --line: #ddd7c4;
+    --gold: #a8842f;
+    --gold-deep: #7d611f;
+    --gold-soft: #f1e6c8;
+    --black: #0d0c0a;
+    --white: #ffffff;
+  }
+  body {
+    font-family: "Noto Sans JP", sans-serif;
+    background: var(--paper);
+    color: var(--ink-soft);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: "Cormorant Garamond", serif; }
+
+  .header { background: var(--black); padding: 16px 20px; }
+  .header__inner { max-width: 720px; margin: 0 auto; color: var(--gold-soft); font-size: 16px; font-weight: 700; letter-spacing: .12em; display: flex; align-items: center; justify-content: space-between; }
+  .header__nav a { color: var(--gold-soft); font-size: 12px; font-weight: 500; text-decoration: none; border: 1px solid rgba(200,166,79,.5); border-radius: 999px; padding: 6px 12px; }
+
+  .page-title { background: linear-gradient(160deg, var(--black) 0%, #22200f 100%); color: var(--white); padding: 28px 20px 36px; text-align: center; }
+  .page-title__kicker { font-size: 12px; font-weight: 700; letter-spacing: .1em; color: var(--gold-soft); margin-bottom: 10px; }
+  .page-title__main { font-size: 20px; font-weight: 900; margin-bottom: 8px; }
+  .page-title__lead { font-size: 13px; opacity: .85; max-width: 480px; margin: 0 auto; }
+
+  #app { width: 100%; max-width: 720px; margin: -18px auto 0; padding: 0 16px 64px; }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  .state-card { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 40px 20px; box-shadow: 0 8px 24px rgba(0,0,0,.08); text-align: center; }
+  .state-icon { font-size: 40px; margin-bottom: 16px; }
+  .state-title { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .state-body { font-size: 14px; color: var(--ink-soft); line-height: 1.8; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+
+  .profile-card { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--white); box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+  .profile-card__photo { width: 100%; aspect-ratio: 4 / 3; background: linear-gradient(160deg, var(--black), #2a271a); display: flex; align-items: center; justify-content: center; color: var(--gold-soft); font-size: 48px; position: relative; }
+  .profile-card__photo img { width: 100%; height: 100%; object-fit: cover; }
+  .profile-card__income { position: absolute; top: 12px; right: 12px; background: rgba(13,12,10,.75); border: 1px solid var(--gold); color: var(--gold-soft); font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 999px; letter-spacing: .04em; }
+  .profile-card__body { padding: 20px; }
+  .profile-card__name { font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+  .profile-card__role { font-size: 13.5px; color: var(--gold-deep); font-weight: 700; margin-bottom: 10px; }
+  .profile-card__tagline { font-size: 13.5px; color: var(--ink-soft); font-style: italic; border-left: 3px solid var(--gold); padding-left: 10px; margin-bottom: 16px; }
+  .profile-card__section { margin-bottom: 14px; }
+  .profile-card__label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: .06em; margin-bottom: 6px; }
+  .profile-card__text { font-size: 13.5px; color: var(--ink-soft); line-height: 1.8; white-space: pre-wrap; }
+  .profile-card__pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .profile-card__pills span { font-size: 11px; color: var(--gold-deep); background: var(--gold-soft); border-radius: 6px; padding: 4px 9px; }
+
+  .footer-note { font-size: 12px; color: var(--muted); text-align: center; margin-top: 28px; line-height: 1.8; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header__inner">
+    <span class="serif">PRESTIGE CONNECT</span>
+    <span class="header__nav"><a id="mypage-link" href="#">マイページへ戻る</a></span>
+  </div>
+</header>
+
+<div class="page-title">
+  <p class="page-title__kicker">MEMBERS</p>
+  <div class="page-title__main">会員紹介ページ</div>
+  <p class="page-title__lead">ご登録いただいた会員様のみが閲覧できるページです。気になる方がいらっしゃいましたら、担当までお気軽にご連絡ください。</p>
+</div>
+
+<div id="app">
+
+  <div class="screen active" id="screen-loading">
+    <div class="state-card">
+      <div class="state-icon">⏳</div>
+      <div class="state-title">読み込み中です…</div>
+      <div class="state-body">会員情報を取得しています。しばらくお待ちください。</div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-error">
+    <div class="state-card">
+      <div class="state-icon">⚠️</div>
+      <div class="state-title">ページを表示できませんでした</div>
+      <div class="state-body">リンクが正しくないか、有効期限が切れている可能性があります。<br>お手数ですが、登録時にお送りしたメールのリンクをご確認ください。</div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-empty">
+    <div class="state-card">
+      <div class="state-icon">🕊️</div>
+      <div class="state-title">現在ご紹介できる会員様がいらっしゃいません</div>
+      <div class="state-body">新しい会員様が登録され次第、こちらのページに表示されます。</div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-list">
+    <div class="grid" id="grid"></div>
+    <div class="footer-note">ご入力いただいた情報は、本サービスにおける会員紹介の目的以外には使用しません。メールアドレス・電話番号は公開されず、運営のみが把握しています。</div>
+  </div>
+
+</div>
+
+<script>
+const GAS_ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbz_QW5g24ZG3pOE6JnUCUx4Oocp5zjkqbVKGH5scNhoAGEtdEULarDQ00n92E--Lkjs/exec";
+
+const params = new URLSearchParams(location.search);
+const token = params.get("token") || "";
+document.getElementById("mypage-link").href = "mypage.html?token=" + encodeURIComponent(token);
+
+const screenLoading = document.getElementById("screen-loading");
+const screenError = document.getElementById("screen-error");
+const screenEmpty = document.getElementById("screen-empty");
+const screenList = document.getElementById("screen-list");
+
+function showOnly(screen) {
+  [screenLoading, screenError, screenEmpty, screenList].forEach(s => s.classList.remove("active"));
+  screen.classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function splitTags(value) {
+  return (value || "").split(/[、,]/).map(s => s.trim()).filter(Boolean);
+}
+
+function renderCard(p) {
+  const industries = splitTags(p.connectedIndustries);
+  const partnerTypes = splitTags(p.desiredPartnerType);
+
+  const photoHtml = p.photoUrl
+    ? `<img src="${p.photoUrl}" alt="プロフィール写真">`
+    : `<span>🧑‍💼</span>`;
+
+  const incomeHtml = p.maxMonthlyIncome
+    ? `<div class="profile-card__income">月収 ${escapeHtml(p.maxMonthlyIncome)}</div>`
+    : "";
+
+  return `
+    <div class="profile-card">
+      <div class="profile-card__photo">
+        ${photoHtml}
+        ${incomeHtml}
+      </div>
+      <div class="profile-card__body">
+        <div class="profile-card__name">${escapeHtml(p.name || "")}</div>
+        <div class="profile-card__role">${[p.company, p.title].filter(Boolean).map(escapeHtml).join(" ／ ")}</div>
+        ${p.tagline ? `<div class="profile-card__tagline">「${escapeHtml(p.tagline)}」</div>` : ""}
+
+        <div class="profile-card__section">
+          <div class="profile-card__label">事業内容</div>
+          <div class="profile-card__text">${escapeHtml(p.business || "")}</div>
+        </div>
+        <div class="profile-card__section">
+          <div class="profile-card__label">ビジョン</div>
+          <div class="profile-card__text">${escapeHtml(p.vision || "")}</div>
+        </div>
+        <div class="profile-card__section">
+          <div class="profile-card__label">繋がりたい人</div>
+          <div class="profile-card__text">${escapeHtml(p.wantToConnect || "")}</div>
+        </div>
+        <div class="profile-card__section">
+          <div class="profile-card__label">つながりのある業種</div>
+          <div class="profile-card__pills">${industries.map(t => `<span>${escapeHtml(t)}</span>`).join("")}</div>
+        </div>
+        <div class="profile-card__section">
+          <div class="profile-card__label">提携を希望する職種</div>
+          <div class="profile-card__pills">${partnerTypes.map(t => `<span>${escapeHtml(t)}</span>`).join("")}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function loadList() {
+  if (!token) { showOnly(screenError); return; }
+  if (!GAS_ENDPOINT_URL) { showOnly(screenError); return; }
+  try {
+    const res = await fetch(`${GAS_ENDPOINT_URL}?action=listPublic&token=${encodeURIComponent(token)}`);
+    const data = await res.json();
+    if (data.error) { showOnly(screenError); return; }
+    if (!Array.isArray(data) || data.length === 0) { showOnly(screenEmpty); return; }
+    document.getElementById("grid").innerHTML = data.map(renderCard).join("");
+    showOnly(screenList);
+  } catch (e) {
+    showOnly(screenError);
+  }
+}
+
+loadList();
+</script>
+
+</body>
+</html>

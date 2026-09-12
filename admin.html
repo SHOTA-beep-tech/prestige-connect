@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRESTIGE CONNECT | 管理画面</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --paper: #f6f4ee;
+    --paper-deep: #ece8db;
+    --ink: #16140f;
+    --ink-soft: #3a362c;
+    --muted: #7a7364;
+    --line: #ddd7c4;
+    --gold: #a8842f;
+    --gold-deep: #7d611f;
+    --gold-soft: #f1e6c8;
+    --black: #0d0c0a;
+    --white: #ffffff;
+    --danger: #b23a2f;
+  }
+  body {
+    font-family: "Noto Sans JP", sans-serif;
+    background: var(--paper);
+    color: var(--ink-soft);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: "Cormorant Garamond", serif; }
+
+  .header { background: var(--black); padding: 16px 20px; }
+  .header__inner { max-width: 900px; margin: 0 auto; color: var(--gold-soft); font-size: 16px; font-weight: 700; letter-spacing: .12em; }
+
+  #app { width: 100%; max-width: 900px; margin: 24px auto 0; padding: 0 16px 64px; }
+  .card { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 28px 20px; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  .form-title { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .form-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+  .section-heading { font-size: 14px; font-weight: 700; color: var(--gold-deep); margin: 28px 0 14px; padding-bottom: 8px; border-bottom: 2px solid var(--paper-deep); }
+  .section-heading:first-of-type { margin-top: 0; }
+
+  .field { margin-bottom: 18px; }
+  .field label.field-label { display: block; font-size: 13.5px; font-weight: 700; color: var(--ink); margin-bottom: 7px; }
+  input[type="text"], input[type="tel"], input[type="email"], input[type="password"],
+  input[type="number"], select, textarea {
+    width: 100%; padding: 13px 14px; font-size: 15px; font-family: inherit;
+    border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink);
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); }
+  textarea { resize: vertical; min-height: 70px; }
+
+  .submit-btn, .secondary-btn {
+    padding: 14px 20px; font-size: 15px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer;
+  }
+  .submit-btn { color: var(--black); background: linear-gradient(135deg, var(--gold) 0%, #cdaa4d 100%); width: 100%; margin-top: 12px; }
+  .submit-btn:disabled { background: var(--muted); cursor: not-allowed; }
+  .secondary-btn { color: var(--ink-soft); background: var(--paper); border: 1px solid var(--line); width: 100%; margin-top: 10px; }
+
+  .state-icon { font-size: 40px; text-align: center; margin-bottom: 16px; }
+  .state-title { font-size: 18px; font-weight: 700; color: var(--ink); text-align: center; margin-bottom: 8px; }
+  .state-body { font-size: 14px; color: var(--ink-soft); text-align: center; line-height: 1.8; }
+  .error-text { color: var(--danger); font-size: 13px; text-align: center; margin-top: 10px; }
+
+  .client-row {
+    display: flex; align-items: center; gap: 14px; padding: 14px 12px;
+    border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px; background: var(--paper);
+  }
+  .client-row__main { flex: 1; min-width: 0; }
+  .client-row__name { font-size: 15px; font-weight: 700; color: var(--ink); }
+  .client-row__name span { font-size: 12px; font-weight: 500; color: var(--muted); margin-left: 6px; }
+  .client-row__sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .client-row__contact { font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+  .badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; flex-shrink: 0; }
+  .badge.public { color: var(--gold-deep); background: var(--gold-soft); }
+  .badge.private { color: var(--muted); background: var(--paper-deep); }
+  .badge.pending { color: var(--danger); background: #f7e6e3; }
+  .edit-btn {
+    flex-shrink: 0; padding: 8px 16px; font-size: 13px; font-weight: 700;
+    color: var(--gold-deep); background: var(--gold-soft); border: 1px solid var(--gold);
+    border-radius: 8px; cursor: pointer;
+  }
+  .approve-btn {
+    color: var(--black); background: linear-gradient(135deg, var(--gold) 0%, #cdaa4d 100%); border: none;
+  }
+
+  .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .toolbar .count { font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header__inner serif">PRESTIGE CONNECT — 管理画面</div>
+</header>
+
+<div id="app">
+  <div class="card">
+
+    <!-- ===== ログイン ===== -->
+    <div class="screen active" id="screen-login">
+      <div class="form-title">スタッフログイン</div>
+      <div class="form-subtitle">管理者パスワードを入力してください。</div>
+      <div class="field">
+        <label class="field-label" for="admin-password">パスワード</label>
+        <input type="password" id="admin-password" autocomplete="off">
+      </div>
+      <button type="button" class="submit-btn" id="login-btn">ログイン</button>
+      <div class="error-text" id="login-error" style="display:none;">パスワードが正しくないか、通信に失敗しました。</div>
+    </div>
+
+    <!-- ===== 一覧 ===== -->
+    <div class="screen" id="screen-list">
+      <div class="toolbar">
+        <div class="form-title" style="margin-bottom:0;">会員一覧</div>
+        <span class="count" id="client-count"></span>
+      </div>
+      <div id="client-list"></div>
+    </div>
+
+    <!-- ===== 編集 ===== -->
+    <div class="screen" id="screen-edit">
+      <div class="form-title">プロフィール編集</div>
+      <div class="form-subtitle">スタッフとして、この会員のプロフィールを編集できます。</div>
+
+      <form id="edit-form">
+        <div class="section-heading">公開設定</div>
+        <div class="field">
+          <label class="field-label" for="status">公開ステータス</label>
+          <select id="status" name="status">
+            <option value="承認待ち">承認待ち（まだ会員紹介ページに表示しない）</option>
+            <option value="公開">公開（承認済み・他の会員に表示される）</option>
+            <option value="非公開">非公開（会員紹介ページに表示しない）</option>
+          </select>
+        </div>
+
+        <div class="section-heading">基本プロフィール</div>
+        <div class="field"><label class="field-label" for="name">お名前</label><input type="text" id="name" name="name"></div>
+        <div class="field"><label class="field-label" for="company">会社名</label><input type="text" id="company" name="company"></div>
+        <div class="field"><label class="field-label" for="title">役職</label><input type="text" id="title" name="title"></div>
+
+        <div class="section-heading">事業について</div>
+        <div class="field"><label class="field-label" for="business">事業内容</label><textarea id="business" name="business"></textarea></div>
+        <div class="field"><label class="field-label" for="vision">ビジョン</label><textarea id="vision" name="vision"></textarea></div>
+        <div class="field"><label class="field-label" for="wantToConnect">繋がりたい人</label><textarea id="wantToConnect" name="wantToConnect"></textarea></div>
+        <div class="field"><label class="field-label" for="connectedIndustries">現在仲の良い、つながりのある業種</label><input type="text" id="connectedIndustries" name="connectedIndustries"></div>
+        <div class="field"><label class="field-label" for="desiredPartnerType">提携先職種</label><input type="text" id="desiredPartnerType" name="desiredPartnerType"></div>
+
+        <div class="section-heading">収入について</div>
+        <div class="field">
+          <label class="field-label" for="maxMonthlyIncome">最高月収</label>
+          <select id="maxMonthlyIncome" name="maxMonthlyIncome">
+            <option value="">選択しない（非公開）</option>
+            <option value="100万円未満">100万円未満</option>
+            <option value="100万円〜200万円">100万円〜200万円</option>
+            <option value="200万円〜300万円">200万円〜300万円</option>
+            <option value="300万円〜500万円">300万円〜500万円</option>
+            <option value="500万円以上">500万円以上</option>
+          </select>
+        </div>
+
+        <div class="section-heading">一言</div>
+        <div class="field"><label class="field-label" for="tagline">一言</label><input type="text" id="tagline" name="tagline"></div>
+
+        <div class="section-heading">連絡先（スタッフ確認用）</div>
+        <div class="field"><label class="field-label" for="email">メールアドレス</label><input type="email" id="email" name="email"></div>
+        <div class="field"><label class="field-label" for="phone">電話番号</label><input type="tel" id="phone" name="phone"></div>
+
+        <button type="submit" class="submit-btn" id="save-btn">保存する</button>
+        <button type="button" class="secondary-btn" id="back-to-list-btn">一覧に戻る</button>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const GAS_ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbz_QW5g24ZG3pOE6JnUCUx4Oocp5zjkqbVKGH5scNhoAGEtdEULarDQ00n92E--Lkjs/exec";
+
+let adminPassword = sessionStorage.getItem("pc_admin_password") || "";
+let clients = [];
+let editingToken = "";
+
+const screenLogin = document.getElementById("screen-login");
+const screenList = document.getElementById("screen-list");
+const screenEdit = document.getElementById("screen-edit");
+
+function showOnly(screen) {
+  [screenLogin, screenList, screenEdit].forEach(s => s.classList.remove("active"));
+  screen.classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+async function loadList() {
+  if (!GAS_ENDPOINT_URL) {
+    document.getElementById("login-error").style.display = "block";
+    document.getElementById("login-error").textContent = "GAS_ENDPOINT_URL が未設定です。バックエンドのデプロイ後にご利用ください。";
+    return;
+  }
+  try {
+    const res = await fetch(`${GAS_ENDPOINT_URL}?action=adminList&password=${encodeURIComponent(adminPassword)}`);
+    const data = await res.json();
+    if (data.error) {
+      sessionStorage.removeItem("pc_admin_password");
+      document.getElementById("login-error").style.display = "block";
+      return;
+    }
+    clients = data;
+    renderList();
+    showOnly(screenList);
+  } catch (e) {
+    document.getElementById("login-error").style.display = "block";
+  }
+}
+
+function badgeClass(status) {
+  if (status === "公開") return "public";
+  if (status === "非公開") return "private";
+  return "pending"; // 承認待ち
+}
+
+function renderList() {
+  const pendingCount = clients.filter(c => c.status === "承認待ち").length;
+  document.getElementById("client-count").textContent =
+    pendingCount > 0 ? `${clients.length}件（承認待ち ${pendingCount}件）` : `${clients.length}件`;
+
+  // 承認待ちを一番上に表示して見落としを防ぐ
+  const sorted = [...clients].sort((a, b) => (a.status === "承認待ち" ? -1 : 0) - (b.status === "承認待ち" ? -1 : 0));
+
+  document.getElementById("client-list").innerHTML = sorted.map(c => `
+    <div class="client-row">
+      <div class="client-row__main">
+        <div class="client-row__name">${escapeHtml(c.name || "(未設定)")}<span>${escapeHtml(c.company || "")} ${escapeHtml(c.title || "")}</span></div>
+        <div class="client-row__sub">${escapeHtml(c.maxMonthlyIncome || "月収非公開")}</div>
+        <div class="client-row__contact">${escapeHtml(c.email || "")}　${escapeHtml(c.phone || "")}</div>
+      </div>
+      <span class="badge ${badgeClass(c.status)}">${escapeHtml(c.status || "")}</span>
+      ${c.status === "承認待ち" ? `<button type="button" class="edit-btn approve-btn" data-token="${escapeHtml(c.token)}">承認する</button>` : ""}
+      <button type="button" class="edit-btn" data-token="${escapeHtml(c.token)}">編集</button>
+    </div>
+  `).join("");
+
+  document.querySelectorAll(".edit-btn:not(.approve-btn)").forEach(btn => {
+    btn.addEventListener("click", () => openEdit(btn.getAttribute("data-token")));
+  });
+  document.querySelectorAll(".approve-btn").forEach(btn => {
+    btn.addEventListener("click", () => approveClient(btn.getAttribute("data-token")));
+  });
+}
+
+function approveClient(token) {
+  const c = clients.find(x => x.token === token);
+  if (!c) return;
+  if (!GAS_ENDPOINT_URL) {
+    console.warn("GAS_ENDPOINT_URL が未設定です。送信は行われていません。");
+    c.status = "公開";
+    renderList();
+    return;
+  }
+  const formData = new FormData();
+  Object.keys(c).forEach(key => formData.append(key, c[key]));
+  formData.set("status", "公開");
+  formData.append("action", "adminUpdate");
+  formData.append("password", adminPassword);
+  fetch(GAS_ENDPOINT_URL, { method: "POST", mode: "no-cors", body: formData })
+    .then(() => loadList())
+    .catch(() => loadList());
+}
+
+function openEdit(token) {
+  const c = clients.find(x => x.token === token);
+  if (!c) return;
+  editingToken = token;
+
+  const fields = ["status","name","company","title","business","vision","wantToConnect",
+    "connectedIndustries","desiredPartnerType","maxMonthlyIncome","tagline","email","phone"];
+  fields.forEach(f => {
+    const el = document.getElementById(f);
+    if (el && c[f] !== undefined) el.value = c[f];
+  });
+
+  showOnly(screenEdit);
+}
+
+document.getElementById("login-btn").addEventListener("click", () => {
+  adminPassword = document.getElementById("admin-password").value;
+  document.getElementById("login-error").style.display = "none";
+  sessionStorage.setItem("pc_admin_password", adminPassword);
+  loadList();
+});
+
+document.getElementById("back-to-list-btn").addEventListener("click", () => {
+  showOnly(screenList);
+});
+
+document.getElementById("edit-form").addEventListener("submit", (ev) => {
+  ev.preventDefault();
+  const saveBtn = document.getElementById("save-btn");
+  saveBtn.disabled = true;
+
+  const form = ev.target;
+  const formData = new FormData(form);
+  formData.append("action", "adminUpdate");
+  formData.append("password", adminPassword);
+  formData.append("token", editingToken);
+
+  if (!GAS_ENDPOINT_URL) {
+    console.warn("GAS_ENDPOINT_URL が未設定です。送信は行われていません。", Object.fromEntries(formData));
+    saveBtn.disabled = false;
+    showOnly(screenList);
+    return;
+  }
+
+  fetch(GAS_ENDPOINT_URL, { method: "POST", mode: "no-cors", body: formData })
+    .then(() => loadList())
+    .catch(() => {})
+    .finally(() => {
+      saveBtn.disabled = false;
+      showOnly(screenList);
+    });
+});
+
+if (adminPassword) {
+  loadList();
+}
+</script>
+
+</body>
+</html>

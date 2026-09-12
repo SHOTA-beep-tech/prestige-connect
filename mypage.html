@@ -243,6 +243,19 @@
           <label class="field-label" for="phone">電話番号<span class="required-mark">必須</span></label>
           <input type="tel" id="phone" name="phone" inputmode="tel" autocomplete="tel" required>
         </div>
+        <div class="field">
+          <label class="field-label" for="lineUrl">LINE友だち追加URL<span class="optional-mark">任意</span></label>
+          <input type="text" id="lineUrl" name="lineUrl" placeholder="例：https://line.me/ti/p/xxxxxxxx">
+        </div>
+        <div class="field">
+          <label class="field-label">LINE QRコード画像<span class="optional-mark">任意</span></label>
+          <div class="photo-upload">
+            <div class="photo-preview" id="line-qr-preview">📱</div>
+            <button type="button" class="photo-upload-btn" id="line-qr-upload-btn">画像を変更</button>
+            <input type="file" id="line-qr-input" accept="image/*">
+          </div>
+          <div class="note">新しい画像を選択した場合のみ差し替わります。</div>
+        </div>
 
         <button type="submit" class="submit-btn" id="to-preview-btn">プレビューを確認する</button>
       </form>
@@ -362,6 +375,25 @@ photoInput.addEventListener("change", () => {
   reader.readAsDataURL(file);
 });
 
+// ---- LINE QRコード画像アップロード ----
+const lineQrInput = document.getElementById("line-qr-input");
+const lineQrUploadBtn = document.getElementById("line-qr-upload-btn");
+const lineQrPreview = document.getElementById("line-qr-preview");
+let lineQrDataUrl = ""; // 新しく選んだ画像（base64）
+let existingLineQrUrl = ""; // 既存のQR画像URL（Driveなど）
+
+lineQrUploadBtn.addEventListener("click", () => lineQrInput.click());
+lineQrInput.addEventListener("change", () => {
+  const file = lineQrInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    lineQrDataUrl = e.target.result;
+    lineQrPreview.innerHTML = `<img src="${lineQrDataUrl}" alt="LINE QRコードプレビュー">`;
+  };
+  reader.readAsDataURL(file);
+});
+
 // ---- 初期データ読み込み ----
 async function loadProfile() {
   if (!token) { showOnly(screenError); return; }
@@ -379,7 +411,7 @@ async function loadProfile() {
 
 function populateForm(data) {
   const fields = ["name","company","title","business","vision","wantAsCustomer","wantAsPartner",
-    "connectedIndustries","desiredPartnerType","maxMonthlyIncome","tagline","email","phone"];
+    "connectedIndustries","desiredPartnerType","maxMonthlyIncome","tagline","email","phone","lineUrl"];
   fields.forEach(f => {
     const el = document.getElementById(f);
     if (el && data[f] !== undefined) el.value = data[f];
@@ -387,6 +419,10 @@ function populateForm(data) {
   if (data.photoUrl) {
     existingPhotoUrl = data.photoUrl;
     photoPreview.innerHTML = `<img src="${existingPhotoUrl}" alt="プロフィール写真">`;
+  }
+  if (data.lineQrUrl) {
+    existingLineQrUrl = data.lineQrUrl;
+    lineQrPreview.innerHTML = `<img src="${existingLineQrUrl}" alt="LINE QRコード">`;
   }
 }
 
@@ -446,6 +482,7 @@ document.getElementById("save-btn").addEventListener("click", () => {
   formData.append("token", token);
   formData.delete("photoFile");
   if (photoDataUrl) formData.append("photoDataUrl", photoDataUrl);
+  if (lineQrDataUrl) formData.append("lineQrDataUrl", lineQrDataUrl);
 
   if (!GAS_ENDPOINT_URL) {
     console.warn("GAS_ENDPOINT_URL が未設定です。送信は行われていません。", Object.fromEntries(formData));

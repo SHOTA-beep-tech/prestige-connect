@@ -171,6 +171,8 @@
         <div class="section-heading">連絡先（スタッフ確認用）</div>
         <div class="field"><label class="field-label" for="email">メールアドレス</label><input type="email" id="email" name="email"></div>
         <div class="field"><label class="field-label" for="phone">電話番号</label><input type="tel" id="phone" name="phone"></div>
+        <div class="field"><label class="field-label" for="lineUrl">LINE友だち追加URL</label><input type="text" id="lineUrl" name="lineUrl"></div>
+        <div class="field"><label class="field-label">LINE QRコード画像</label><div id="line-qr-view" class="note">未設定</div></div>
 
         <button type="submit" class="submit-btn" id="save-btn">保存する</button>
         <button type="button" class="secondary-btn" id="back-to-list-btn">一覧に戻る</button>
@@ -287,11 +289,16 @@ function openEdit(token) {
   editingToken = token;
 
   const fields = ["status","name","company","title","business","vision","wantAsCustomer","wantAsPartner",
-    "connectedIndustries","desiredPartnerType","maxMonthlyIncome","tagline","email","phone"];
+    "connectedIndustries","desiredPartnerType","maxMonthlyIncome","tagline","email","phone","lineUrl"];
   fields.forEach(f => {
     const el = document.getElementById(f);
     if (el && c[f] !== undefined) el.value = c[f];
   });
+
+  const qrView = document.getElementById("line-qr-view");
+  qrView.innerHTML = c.lineQrUrl
+    ? `<a href="${c.lineQrUrl}" target="_blank" rel="noopener">画像を見る</a>`
+    : "未設定";
 
   showOnly(screenEdit);
 }
